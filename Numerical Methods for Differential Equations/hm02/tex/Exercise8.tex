@@ -1,0 +1,28 @@
+\section{Exercise 8}
+In this exercise we would like to investigate the effect of different drop tolerances in the ILU preconditioner. For that, we solve the linear system \texttt{Ax = b}, where \texttt{A} is the square sparse matrix with dimension $2 \cdot 10^4$ provided in \texttt{ML\_laplace.mtx} and \texttt{b} is the right hand side corresponding to the exact solution vector made of all ones. 
+
+We keep \texttt{restart = 50} and change the drop tolerance for the ILU preconditioners. Table \ref{tab:ex08} displays for each of the six runs the drop tolerance, the number of iterations, the CPU time needed for computing the preconditioner (tprec), the CPU time needed for GMRES to solve the system (tsol), the total CPU (tprec+tsol), the final residual norm and the density $\rho$ of the preconditioner,
+that is $\rho=\frac{\text{nnz}\,(L)+\text{nnz}\,(U)-n}{\text{nnz}\,(A)}$, where $n$ is the order of the matrix $A$.
+\begin{table}[ht!]
+    \centering
+    \begin{tabular}{|c|cccccc|}\hline
+       \textbf{droptol}  &  \textbf{n° iterations}&    \textbf{tprecs}  &  \textbf{tsols}   &  \textbf{cpu times} &      \textbf{residual norm}     &    ${\bf \rho}$ \\ \hline
+      $2\cdot10^{-2}$    & 581      &    1.556  &   3.865  &    5.421  &   3.31$\cdot 10^{-11} $ &  0.444\\
+      $10^{-2}$    & 258      &    1.578  &   1.739  &   3.318  &   3.645$\cdot 10^{-11} $ &  0.572\\
+      $3\cdot10^{-3}$    & 129      &    1.496  &  0.620  &   2.116  &   4.49$\cdot 10^{-11} $ &  0.934\\
+      $10^{-3}$    &  86      &    1.611  &  0.366  &   1.977  &   3.86$\cdot 10^{-11} $ &   1.449\\
+      $10^{-4}$    &  67      &    2.358  &  0.257  &   2.615  &   2.93$\cdot 10^{-11} $ &   3.533\\
+      $10^{-5}$    &  59      &    6.175  &  0.232  &    6.407  &   2.47$\cdot 10^{-11} $ &   8.556\\ \hline
+    \end{tabular}
+    \caption{Summary for each run with different drop tolerances.}
+    \label{tab:ex08}
+\end{table}
+Finally, Figure \ref{fig:ex08} shows the convergence profile of the six runs. 
+We observe that decreasing the drop tolerance reduces both the number of GMRES iterations and the CPU time required to solve the linear system. However, as the ILU factorization becomes denser with a smaller drop tolerance, the CPU time required for its computation increases. As a result, it is not always convenient to arbitrarily decrease the drop tolerance. In this case, the optimal tradeoff is achieved for \texttt{droptol = $10^{-3}$}.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Pic/ex08.jpg}
+    \caption{Convergence profile for different drop tolerances.}
+    \label{fig:ex08}
+\end{figure}

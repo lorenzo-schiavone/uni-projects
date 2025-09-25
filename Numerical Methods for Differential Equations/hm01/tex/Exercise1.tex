@@ -1,0 +1,48 @@
+\section{Exercise 1}
+
+We implemented the 2-step Simpson's method
+\[y_{n+2} = y_n + \frac{h}{3}(f_n+ 4 f_{n+1}+f_{n+2})\]
+in MATLAB as follows.
+\begin{lstlisting}[style=Matlab-editor]
+function y_est = simpson_method(fun, h, T, y_0, y_1)
+    %% no handle of different last h
+    N = floor(T/h)+1; y_est = zeros(1,N); y_est(1) = y_0; y_est(2)=y_1; 
+    for n = 3:N
+        y_est(n) = fzero(@(y) -y + y_est(n-2) + h/3 * (fun((n-2)*h, y_est(n-2)) + 4 * fun(h*(n-1), y_est(n-1)) + fun(h*n, y)), y_est(n-1));
+    end
+end
+\end{lstlisting}
+
+Then, after computing the second initial value $y_1$, the function \emph{simpson\_method} is called to solve the test equation $y' = -5y$, $y(0)=1$ with $h=0.05$ and $T=6$ by
+
+\begin{center}
+\begin{lstlisting}[style=Matlab-editor]
+fun = @(t,y) -5 *y;
+h = .06; T = 6; y_0 =1; y_1 = ...;
+y_est = simpson_method(fun, h, T, y_0, y_1);
+\end{lstlisting}
+\end{center}
+
+We compute the second initial value as the exact solution, by a $4$th order Runge-Kutta method and with the Forward Euler Method. 
+\begin{figure}[!ht!]
+    \centering
+    \subfigure[]{
+    \includegraphics[width=0.45\linewidth, height=4cm]{Pic/simpson_method_err_diffy2.jpg}
+    \label{fig:semilogyex01}}
+    \hfill
+    
+    \subfigure[]{
+    \includegraphics[width=0.4\linewidth, height=4cm]{Pic/ex01_err_zoomout.jpg}
+        \label{fig:errex01zoomedout}
+    }
+    \subfigure[]{
+        \includegraphics[width=0.4\linewidth, height=4cm]{Pic/error_ex01.jpg}
+        \label{fig:errex01}
+    }
+    \caption{Error with the exact solution for 2-step Simpson estimates with different second initial values. At the top a semilogarithmic plot of the absolute error, at the bottom right a zoomed plot for $-0.2\leq y \leq 0.2$.}
+    \label{fig:error_plots}
+\end{figure}
+Figures \ref{fig:semilogyex01}, \ref{fig:errex01}, \ref{fig:errex01zoomedout} illustrate the error as the difference between the exact and the approximate solution. The semilogarithmic plot in Figure \ref{fig:semilogyex01} shows that in all the three cases the error increases exponentially in time with the same behavior, since the Simpson's method is nowhere absolutely stable. The initial error in the second initial value represents the starting point of the exponential growth but it is not propagated in time because the Simpson's method is 0-stable, as the roots of the first characteristic polynomial are $-1$, $1$ which are allowed since they are simple.
+
+The oscillatory and increasing nature of the error, due to the negative root of the first characteristic polynomial, can be observed in Figure \ref{fig:errex01zoomedout}. Since the error scale in the run with the second initial value computed using the Forward Euler Method is significantly higher than in the other case, we also provide a zoomed-in frame to highlight the oscillations in the error for the other case as well.
+

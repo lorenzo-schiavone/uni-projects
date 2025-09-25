@@ -1,0 +1,34 @@
+\section{Exercise 1}
+My implementation of the PCG method with Cholesky preconditioner is the following.
+\begin{lstlisting}[style=Matlab-editor]
+function [x, resvec, iter] = mypcg(A, b, tol, maxit, L)
+x = zeros(size(b));
+r = b - A *x;
+resvec = zeros(maxit);resvec(1)=norm(r);
+p = L' \ (L \ r); g=p;rho = r'*g;
+exit_test= tol*norm(b); k=0;
+while ((resvec(k+1)>exit_test) && (k<maxit))
+    z = A*p;
+    alpha = rho/(z'*p);
+    x = x + alpha*p;
+    r = r -alpha*z;
+    g= L' \ (L \ r);
+    rho_new = r'*g;
+    beta = rho_new/rho;
+    p = g + beta*p;
+    k=k+1;
+    rho = rho_new;
+    resvec(k+1)=norm(r);
+end
+resvec = resvec(1:(k+1)); iter = k;
+\end{lstlisting}
+To verify its correctness, Figure \ref{fig:ex01} compares the residue vector norms \texttt{resvec} provided by \texttt{mypcg} with those from MATLAB's \texttt{pcg} in a test case.
+We consider \texttt{A=delsq(numgrid('S',102)), n=size(A,1), b=A*ones(n,1), tol=1e-8} for both the Conjugate Gradient without preconditioner, i.e., with \texttt{L=speye(size(A,1))}, and for PCG with \texttt{L=ichol(A)}.
+In both cases, \texttt{mypcg}'s \texttt{resvec} match MATLAB's \texttt{pcg} ones and \texttt{mypcg} reaches convergence in the same number of iterations of MATLAB's \texttt{pcg}.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Pic/ex01.jpg}
+    \caption{Comparison between \texttt{mypcg}'s and MATLAB \texttt{pcg}'s \texttt{resvec}.}
+    \label{fig:ex01}
+\end{figure}

@@ -1,0 +1,39 @@
+per compilare gli eseguibili cpp entrare dentro le cartelle exact e heuristics e scrivere da terminale 
+>>make
+
+per lanciare il modello cplex scrivere all'interno della cartella exact
+>> ./main <istanza>
+ad esempio
+>> ./main 32_5
+
+per lanciare la local Search scrivere all'interno della cartella heuristics
+>> ./localSearch <istanza>
+ad esempio
+>> ./localSearch 128_9
+
+allo stesso modo per usare l'algoritmo genetico
+>> ./genetic 256_5
+
+il parametro -v imposta verbose=true. per genetic, ad esempio
+>> ./genetic 256_5 -v
+mostra ogni 100 iterazione migliore soluzione e average hamming.
+per localSearch mostra tutte le mosse 2opt e 3opt per le prime due run (è un lungo output).
+
+i parametri si trovano nella cartella parameters e possono essere modificati lì
+
+dopo ogni run viene salvato il tour di soluzione dentro la cartella solutions/<metodo> e un riassunto con objective value e tempo impiegato in un csv nella cartella results 
+
+una volta ottenute soluzioni possono essere raffigurate con lo script PlotSolution.py all'interno della cartella scripts con 
+>> python3 PlotSolution.py 128_9
+
+la cartella "data" contiene le matrici dei pesi per un istanza per dimensione come esempio nella cartella "cost_matrix" e le coordinate dei nodi in formato json nella cartella "pos_dict"
+
+alla consegna sono presenti le istanze 
+- 16_6
+- 32_5
+- 64_6
+- 128_9
+- 256_6
+
+se ne possono generare altre con lo script BoardGeneration.py lanciandola da dentro la cartella scripts con
+>> python3 BoardGeneration.py

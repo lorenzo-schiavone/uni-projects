@@ -1,0 +1,27 @@
+\section{Exercise 4}
+In order to compare the non preconditioned CG and the PCG with Jacobi or Incomplete Cholesky preconditioners, we solve with PCG a linear system \texttt{Ax=b} with \texttt{A = gallery ('wathen',100,100)} as the coefficient matrix and \texttt{b} the right hand side corresponding to a random vector solution. 
+
+\begin{minipage}[s]{.49\textwidth}
+    \begin{figure}[H] % Forces the figure to stay here
+        \centering
+        \includegraphics[width=0.9\linewidth]{Pic/ex04.jpg}
+        \caption{Convergence profile of one case.}
+        \label{fig:ex04}
+    \end{figure}
+\end{minipage}%
+\begin{minipage}[s]{.49\textwidth}
+    \begin{table}[H] % Forces the table to stay here
+        \centering
+        \begin{tabular}{|c|cc|}
+            \hline
+            \textbf{method} & \textbf{CPU time (sec)} & \textbf{n° iterations} \\ \hline
+              CG  & 0.45& 369\\
+            Jacobi   &0.08& 46 \\
+             IC(0)  & 0.05 & 13 \\
+             \hline
+        \end{tabular}
+        \caption{Average CPU time and iteration number for 100 run with random vector solution.}
+        \label{tab:ex04}
+    \end{table}
+\end{minipage}
+From Figure \ref{fig:ex04} and Table \ref{tab:ex04}, it is evident that, even relatively simple preconditioner like Jacobi or the Incomplete Cholesky with the same sparsity pattern of the matrix $A$, helps to drastically reduce the CPU time and number of iterations to reach convergence.

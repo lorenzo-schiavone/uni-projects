@@ -1,0 +1,3 @@
+Each ex0*.m contains the matlab code for the corresponding exercise.
+The main.m file runs the scripts one after the other.
+In ex05.m we compute once the exact solution with \texttt{expm}, save it in y_exact.mat, and load it afterwards.

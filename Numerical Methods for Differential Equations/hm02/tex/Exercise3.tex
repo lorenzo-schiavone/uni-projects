@@ -1,0 +1,27 @@
+\section{Exercise 3}
+In this exercise, we show that for a diagonal matrix 
+$A = \text{diag}(200, 400, 600, 800, 1000, 1, 1, \dots, 1)$
+of size $n = 10^4$, the PCG method converges exactly in six iterations.
+
+Indeed, at each iteration $k$, the error vector $e_k$ lies in the subspace 
+\[e_0 + \text{span}\{ A e_0, A^2 e_0, \dots, A^k e_0 \} \quad \text{i.e.,}\quad e_k = e_0 + \sum_{j=1}^k c_j A^j e_0 = P_k(A)e_0, \] 
+for some coefficients $c_j$ and polynomial of degree $k$ denoted $P_k(x)$ with $ P_k(0) = 1$. By the minimality property of the CG method, we have that
+\[ \|e_k\|_A = \min_{P_k \,:\, P_k(0) = 1} \|P_k(A)e_0\|_A. \] 
+In our case, for $k=6$, we can choose the polynomial 
+\[P_6(x) = (1 - x) \prod_{i=1}^5 \left(1 - \frac{x}{200\cdot i}\right) \] 
+and, since $A$ is diagonalizable, there exists a basis of eigenvectors $(u_i)_{i=1,\dots,n}$, for which $e_0 = \sum_{i=1}^n \alpha_i u_i$. Thus, 
+\[P_6(A)e_0 = \sum_{i=1}^n \alpha_i P_6(A)u_i \] 
+but $P_6(A)u_i = 0$ for all $i=1, \dots, n$ because the eigenvalues of $A$ are exactly $\{1, 200, 400, 600, 800, 1000\}$, and for each eigenvector $u_i$ the factor related to the corresponding eigenvalue $\lambda_i$ vanishes:
+\[
+P_6(A)u_i = \left(1 - \lambda_i\right) \prod_{j=1}^5 \left(1 - \frac{\lambda_i}{200j}\right)u_i = 0.
+\] 
+Hence, the PCG method converges in at most six iterations. 
+Moreover, this argument cannot be applied for $k < 6$ because $A$ has six distinct eigenvalues, and any polynomial of degree $k$ can have at most $k$ real roots. Therefore, for $k < 6$, it is impossible for the polynomial $P_k(x)$ to vanish at all six eigenvalues of $A$.
+Therefore, in this case, the PCG method converges in at least six iterations and thus in exactly six iterations.
+
+\begin{figure}[!ht!]
+    \centering    \includegraphics[width=0.4\linewidth]{Pic/ex03.jpg}
+    \caption{Semilogarithmic plot of the residual norm vs the iteration number.}
+    \label{fig:ex03}
+\end{figure}
+Figure \ref{fig:ex03} shows \texttt{resvec} for iteration number taken by \text{mypcg} applied to the matrix $A$ above and random right hand side \texttt{b = rand(n,1)}. In agreement with the theory, the method converges exactly in six iterations.

@@ -1,0 +1,32 @@
+\section{Exercise 7}
+For the same linear system, we would like to investigate the effects of different restart values.
+We use the MATLAB's \texttt{gmres} with \texttt{tol = 1e-12}, \texttt{restart = 10,20,30,50}
+and the ILU preconditioner with \texttt{droptol = 1e-2}.
+For each of the four values of restart, we record in Table \ref{tab:ex07} the number of total iterations, the relative residual at convergence, and the CPU time.
+
+\hspace{-1.5cm} \begin{minipage}[s]{.49\textwidth}
+    \begin{figure}[H] % Forces the figure to stay here
+        \centering
+        \includegraphics[width=0.9\linewidth]{Pic/ex07.jpg}
+        \caption{ Convergence profiles for different restart values.}
+        \label{fig:ex07}
+    \end{figure}
+\end{minipage}%
+\begin{minipage}[s]{.49\textwidth}
+    \begin{table}[H] % Forces the table to stay here
+        \centering
+        \begin{tabular}{|c|ccc|}
+            \hline
+            \textbf{Restarts} & \textbf{n° iterations} & \textbf{Relres} & \textbf{CPU time (sec)}  \\ \hline
+             10     &    1367   &  2.03 $\cdot 10^{-12}$ &    1.9685 \\
+             20     &     760   &  1.33 $\cdot 10^{-12}$ &    1.4441 \\
+             30     &     118   &  1.38 $\cdot 10^{-12}$ &   0.18664 \\
+             50     &      91   &  9.94 $\cdot 10^{-13}$ &   0.10118 \\
+             \hline
+        \end{tabular}
+        \caption{Summary for different restart values.}
+        \label{tab:ex07}
+    \end{table}
+\end{minipage}
+
+From Figure \ref{fig:ex07} and Table \ref{tab:ex07}, we observe that increasing the restart value, i.e., the maximum number of basis vectors for the Krylov subspaces, results in fewer iterations to achieve convergence and CPU time, despite each iteration of the Arnoldi's method being more computationally expensive. Conversely, with a smaller restart value, each iteration is cheaper, but we need more than 1300 iterations to reach convergence and more CPU time as well.

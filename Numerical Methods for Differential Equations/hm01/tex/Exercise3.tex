@@ -1,0 +1,109 @@
+\section{Exercise 3}
+\begin{enumerate}[i)]
+\item (Obtain the BDF2 formula)
+To obtain the BDF2 formula we need to interpolate $(t_n, y_n)$, $(t_{n+1}, y_{n+1})$ and $(t_{n+2}, y_{n+2})$ with a degree two polynomial by using the Lagrange Polynomials, where $t_n = nh$ for some step size $h>0$. The interpolating Lagrange polynomial is \[L(t) = \sum_{j=0}^2y_{n+j}l_{j}(t), \quad \text{ where } l_{j}(t)= \prod_{0\leq m\leq 2, m\neq j}\frac{t-t_m}{t_j-t_m}.\] Therefore, we can compute
+\begin{align*}
+    l_0(t)&= \frac{t-t_1}{t_0-t_1}\frac{t-t_2}{t_0-t_2}= \frac{1}{2h^2}(t-t_1)(t-t_2), \\
+    l_1(t)&= \frac{t-t_0}{t_1-t_0}\frac{t-t_2}{t_1-t_2}= -\frac{1}{h^2}(t-t_0)(t-t_2), \\
+    l_2(t)&= \frac{t-t_0}{t_2-t_0}\frac{t-t_1}{t_2-t_1}= \frac{1}{2h^2}(t-t_0)(t-t_1).
+\end{align*}
+Then, we approximate $f(t_{n+2}, y_{n+2})$ with $L'(t)|_{t=t_2}$. Since
+\begin{align*}
+    l_0'(t)|_{t=t_2}&= \frac{1}{2h^2}[(t-t_1)+(t-t_2)]|_{t=t_2} = \frac{1}{2h^2}(t_2-t_1)=\frac{1}{2h^2}h=\frac{1}{2h}, \\
+    l_1'(t)|_{t=t_2}&= -\frac{1}{h^2}[(t-t_0)+(t-t_2)]|_{t=t_2} = -\frac{1}{h^2}(t_2-t_0)= -\frac{1}{h^2}2h = -\frac{2}{h}, \\
+    l_2'(t)|_{t=t_2}&= \frac{1}{2h^2}[(t-t_0)+(t-t_1)]|_{t=t_2} = \frac{1}{2h^2}[(t_2-t_0)+(t_2-t_1)] = \frac{1}{2h^2}3h = \frac{3}{2h},
+\end{align*}
+wo obtain
+\[f(t_{n+2}, y_{n+2}) \approx L'(t)|_{t=t_{n+2}} = \frac{1}{2h}y_n - \frac{2}{h}y_{n+1} + \frac{3}{2h}y_{n+2} = \frac{1}{2h}(y_n - 4y_{n+1}+3y_{n+2}).\]
+
+The 2-step Backward Differentiation Formula, after rearranging it, is
+\[
+y_{n+2} = \frac{4}{3}y_{n+1} - \frac{1}{3}y_n + \frac{2}{3}hf(t_{n+2}, y_{n+2}).
+\]
+
+\item (Local truncation error)
+We  want to compute the local truncation error at each step while approximating the derivative $y'(t_{n+2})= f(t_{n+2}, y(t_{n+2}))$, i.e., 
+\begin{align*}
+     \tau_{n+2} &=f(t_{n+2}, y(t_{n+2})) - L'(t_{n+2}).\\
+&= f(t_{n+2}, y(t_{n+2})) - \frac{1}{2h}(y_n - 4y_{n+1}+3y_{n+2}).
+\end{align*} 
+Taylor expansion up to order 3 of $y(t)$ gives
+\begin{align*}
+    y(t_n)&=y(t_{n+2}-2h) = y_{n+2} -2h f_{n+2} + \frac{(2h)^2}{2}y''_{n+2} - \frac{(2h)^3}{6}y'''(\eta) \\
+    y(t_{n+1})&=y(t_{n+2}-h) = y_{n+2} -h f_{n+2} + \frac{h^2}{2}y''_{n+2} - \frac{h^3}{6}y'''(\xi)
+\end{align*}
+for some $\eta\in[t_n, t_{n+2}]$ and $\xi\in[t_n, t_{n+1}]$. 
+Thus
+\begin{align*}
+    \tau_{n+2} &= f_{n+2} - \frac{1}{2h}(y_n - 4y_{n+1}+3y_{n+2}) \\
+    &= f_{n+2} - \frac{1}{2h}\left(y_{n+2} -2h f_{n+2} + \frac{4h^2}{2}y''_{n+2} - \frac{8h^3}{6}y'''(\eta) -4(y_{n+2} -h f_{n+2} + \frac{h^2}{2}y''_{n+2} - \frac{h^3}{6}y'''(\xi)) + 3y_{n+2}\right) \\
+    &= f_{n+2}-\frac{1}{2h}\left(2hf_{n+2} -\frac{h^3}{6}(8y'''(\eta)-4y'''(\xi))\right) = \frac{h^2}{12}(8y'''(\eta)-4y'''(\xi)) =  \frac{h^2}{3}(2y'''(\eta)-y'''(\xi)).
+\end{align*}
+
+If we assume $y'''(\xi)\approx y'''(\eta)$ then the truncation error is
+\[\tau_{n+2} = \frac{h^2}{3}(2y'''(\eta)-y'''(\xi)) \approx \frac{h^2}{3}|y'''(\eta)|\leq \frac{h^2}{3} \|y'''\|_{\infty} . \]
+
+\begin{comment}
+We want to compute the local truncation error while approximating the derivative $y'(t) = f(t, y(t))$ with the derivative $L'(t)$ of the interpolating Lagrange polynomial. The truncation error is 
+\[
+\tau_{n+2} = f(t_{n+2}, y(t_{n+2})) - L'(t_{n+2}).
+\]
+
+As the approximation error for the Lagrange interpolation is 
+\[
+E(t) = \frac{f'''(\eta(t)}{6}(t - t_{n+2})(t - t_{n+1})(t - t_n),
+\]  
+for some $\eta \in [t_n, t_{n+2}]$, we have that $y(t) = L(t) + E(t)$ and, after differentiating,
+$f(t, y) = y'(t) = L'(t) + E'(t)$, i.e., the truncation error is exactly
+\[
+\tau_{n+2} = f(t, y(t)) - L'(t) = E'(t).
+\]  
+For giving an estimate, we compute the maximum of $E'(t)$ in the interval $[t_n, t_{n+2}]$. The derivative $E'(t)$ is 
+\begin{align*}
+    E'(t) &= \frac{f'''(\eta(t)))}{6} \big( 
+(t - t_{n+1})(t - t_n) + (t - t_{n+2})(t - t_n) + (t - t_{n+2})(t - t_{n+1})\big) \\
+&+\frac{f^{(4)}(\eta(t))\eta'(t)}{6}(t - t_{n+2})(t - t_{n+1})(t - t_n),
+\end{align*}
+and we can neglect the term involving the fourth derivative because it is $O(h^3)$ and we are considering $h \sim 0$.
+
+Therefore $E'(t)$ is approximately a degree two polynomial and the maximum of its absolute value is usually attained at one of the endpoints of the interval. Since we have that
+\[|E'(t_n)| = \left| \frac{f'''(\eta)}{6} (-2h \cdot (-h)) \right| = \frac{h^2}{3} |f'''(\eta)| \] and 
+\[
+|E'(t_{n+2})| = \left| \frac{f'''(\eta)}{6} (h \cdot 2h) \right| = \frac{h^2}{3} |f'''(\eta)|,
+\]
+the truncation error is
+\[
+\tau_{n+2} = \frac{h^2}{3} |f'''(\eta)| \leq \frac{h^2}{3} \|f'''\|_{\infty} .
+\]
+\end{comment}
+\item (Absolute stability for $\overline{h}<0$)
+We now want to determine that BDF2 is absolutely stable in the real interval $\overline{h}\in(-\infty, 0)$. The method applied to the test equation \[y' = \lambda y, \quad y(0)=1 \]
+for $\lambda<0$, gives
+\[y_{n+2} - \frac{4}{3}y_{n+1} + \frac{1}{3}y_n = \frac{2}{3}h\lambda y_{n+2}\] and the recurrence relation \[(1-\frac{2}{3}h\lambda )y_{n+2} = \frac{1}{3}(4y_{n+1}-y_n).\] 
+
+By multiplying both members by $3$ and seeking a solution of the form of $y_n = z^n$, we obtain: 
+\[p(z) := z^2(3-2\overline{h})-4z  +1 = 0,\] where $\overline{h} = h\lambda$ and we have divided by $z^n$ as it cannot be zero, otherwise the solution would not satisfy the initial condition.
+For absolutely stability we need that the roots of $p(z)$,
+\[
+z_{\pm} = \frac{2\pm \sqrt{4+2\overline{h}-3}}{3-2\overline{h}}= \frac{2\pm \sqrt{1+2\overline{h}}}{3-2\overline{h}},
+\]
+are in the unit circle and if they are in the border they have multiplicity one. 
+There is a double solution only if $\overline{h}=-1/2$. In that case
+$|z|=2/|3+1|=1/2<1$ that implies absolute stability.
+
+For $1+2\overline{h}<0$, i.e., $\overline{h}<-1/2$, the roots are complex conjugate and their norm squared is
+\[z_+\cdot z_- = \frac{4- (1+2\overline{h})}{(3-2\overline{h})^2} = \frac{1}{|3-2\overline{h}|}\] and is less than one if and only if $|3-2\overline{h}|
+>1$ that is always true for $\overline{h}<1/2$, as we have that $3-2\overline{h}>3-1 = 2$.
+
+For $-1/2 < \overline{h} < 0$, the roots are real. Also in this case, the denominator is always positive as $-\overline{h} > 0$ implies $3-2\overline{h}>3$. Then $|z_\pm|<1$ holds if and only if \[
+-(3-2\overline{h}) < 2\pm \sqrt{1+2\overline{h}} < 3-2\overline{h}
+\]  that can be rewritten as 
+\[
+-5 + 2\overline{h} < \pm \sqrt{1+2\overline{h}} < 1-2\overline{h}.
+\]
+We have one set of inequality for $z_+$ and one for $z_-$. 
+For $z_+$, we have that $\sqrt{1+2\overline{h}}> -5 + 2 \overline{h}$ because $ -5 + 2 \overline{h}<0$ for $h<2/5$ that is the case as $\overline{h}<0$. For the other inequality we can square both member because $3-2\overline{h}>0$ as this holds when $\overline{h}<3/2$, and we obtain $1+2\overline{h}< 1 - 4 \overline{h} + 4\overline{h}^2$ that is $4\overline{h}^2-6\overline{h}>0 $, i.e., as $\overline{h}<0$, $\overline{h}<3/2$ that is always true for $\overline{h}<0$.
+
+For $z_-$, the inequalities are $2\overline{h}-1 < \sqrt{1+2\overline{h}}< 5- 2\overline{h}$. Again, $2\overline{h}-1<0$ when $\overline{h}<1/2$ and therefore this inequality is always verified for $h<0$. For the right hand side we can square both member as $5- 2\overline{h}>0$ when $\overline{h}< 5/2$, and we obtain $1+2\overline{h}< 25 -20\overline{h} + 4\overline{h}^2$ that is $4\overline{h}^2 -22\overline{h} +24 >0$ or $2\overline{h}^2 -11\overline{h} +12 >0$. It represents a parabola with positive concavity intersecting the x-axis in $\frac{11\pm 5}{4}$, i.e., for $\overline{h}=3/2$ and $\overline{h}=4$. Therefore  $2\overline{h}^2 -11\overline{h} +12 >0$ for $\overline{h}>4$ and $\overline{h}<3/2$ that includes $-1/2<\overline{h}<0$.
+
+\end{enumerate}

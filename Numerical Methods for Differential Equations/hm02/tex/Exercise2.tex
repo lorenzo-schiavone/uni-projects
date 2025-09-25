@@ -1,0 +1,19 @@
+\section{Exercise 2}
+
+We would like to verify the dependence of the number of CG iterations on the square root of the condition number $\sqrt{\kappa(A)}$ by
+solving 4 linear systems \texttt{Ax = b} with \texttt{A=delsq(numgrid('S',nx))} and $nx = 102, 202, 402, 802$. The parameters \texttt{tol = 1e-8} and \texttt{maxit = 5000} are fixed and the right hand side $b$ is set to correspond to the exact solution \texttt{\textbf{x} = 1./sqrt(1:size(A,1))}.
+Table \ref{tab:ex02} reports the number of iterations required by the method with different $nx$ and \texttt{droprol} for the Cholesky preconditioners. We observe see that, every time the mesh discretization parameter is halved, in any column, the number of iterations doubles in agreement with the theory, since the condition number of the Poisson matrix doubles.
+
+\begin{table}[ht!]
+    \centering
+    \begin{tabular}{|c|cccc|}
+    \hline
+        $nx -1 \approx h^{-1}$ &  CG & IC(0) & IC(2) & IC(3)\\ \hline
+         101 &283 &87&45 &17 \\
+         201 & 532 &159 &78 &30  \\
+         401 & 948 &282   &137&  53  \\
+         801 &1792 &533 &258 &97 \\ \hline
+    \end{tabular}
+    \caption{Number of CG iterations with different $nx$. Respectively, with no preconditioner: CG, with Cholesky preconditioner with the same sparsity pattern of $A$: IC(0), with \texttt{droptol = 1e-2}: IC(2) and with \texttt{droptol = 1e-3}: IC(3).}
+    \label{tab:ex02}
+\end{table}

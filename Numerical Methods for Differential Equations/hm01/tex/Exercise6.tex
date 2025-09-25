@@ -1,0 +1,34 @@
+\section{Exercise 6}
+We want to compare fixed and adaptive time steps while solving the problem
+\begin{align*}
+    y'(t)&=-10y^2(t) \\
+    y(0) &= 1
+\end{align*}
+with the Crank Nicolson method and final time $T =100$. Starting with $h =10^{-3}$,
+we use the following adaptive step procedure
+with $\text{tol}=10^{-8}$.
+
+At each step we compute the difference, we denote \emph{err}, between the CN estimate with time step $h$ and the 2-stage estimate made by two consecutive CN steps with time step $h/2$. 
+Then, the next time step will be 
+\begin{equation}
+    h_{\text{new}}=h\left(\frac{3}{4}\frac{\text{tol}}{\text{err}}\right)^{1/3}.
+    \label{eq:adaptivetimestep}
+\end{equation}
+
+This follows from the fact that the error with a step size $h$ is $y_{\text{exact}}-y_1^{(0)} = C_0h^3$ and, when computing an intermediate stage, $y_{\text{exact}}-y_1^{(1)} = (C_1+C_2)(h/2)^3$ for some constants $C_1, C_2$. If we assume $C_0 = C_1 = C_2$, then \[\text{err} = y_1^{(0)} - y_1^{(1)} = h^3(C - \frac{2}{8}C) = \frac{3}{4} C h^3\] gives an estimate $C\approx \frac{4}{3h^3} \text{err}$. Thus, with a step size of $qh$ the error is \[y_{\text{exact}}-y_1^{(q)} = C(qh)^3\approx \frac{4}{3h^3}\text{err}(qh)^3 = \frac{4}{3}q^3\text{err}\] that is a desired tolerance if $q=(\frac{3}{4}\frac{\text{tol}}{\text{err}})^{1/3}$ that is the ratio $h_{new}/h$ in Equation \ref{eq:adaptivetimestep}.
+
+The absolute error at each step is depicted in Figure \ref{fig:err_adaptTimestep} and the step size at different time steps in Figure \ref{fig:adaptiveTs}.
+
+\begin{figure}[!ht!]
+    \centering
+    \subfigure[LogLogPlot of Absolute Value Error.]{\includegraphics[width=0.45\linewidth,height=4cm]{Pic/ex06_abserr_loglog.jpg}
+        \label{fig:err_adaptTimestep}
+    }
+    \subfigure[Step size at different steps.]{
+    \includegraphics[width=0.45\linewidth, height=4cm]{Pic/ex06_stepsize.jpg}
+    \label{fig:adaptiveTs}
+    }
+\end{figure}
+Even though at the beginning the adaptive method chooses smaller step size because the function is steep, when the function becomes flatter the adaptive method uses larger and larger step size, up to $h=2.64$, and reaches the final time in less than $10^3$ steps without sacrificing accuracy, much less than the $10^5$ steps needed with fixed step size.
+
+Therefore, using adaptive step size is more efficient than using fixed step size: indeed, the most costly operation is the call to the MATLAB function \texttt{fzero} and with fixed time step we call it $10^5$ times while with the adaptive time step only $ 4 \cdot 10^3$, three for the estimate of \emph{err} and one for the actual estimate of $y$ with $h_{\text{new}}$, that is much less than $10^5$. The CPUtime in fact are in this case $0.12$s for adaptive steps compared to $ 0.76$s with fixed steps.

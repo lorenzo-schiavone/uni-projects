@@ -1,0 +1,34 @@
+\section{Exercise 6}
+My implementation of the preconditioned GMRES is exactly as in Exercise 5 where we have only changed these following three lines:
+\begin{lstlisting}[style=Matlab-editor]
+function [x,iter ,resvec ,flag] = myprecgmres(A,b,tol ,maxit,x0,L,U)
+r0 = U\(L\(b - A*x0));
+...
+exit_test = tol*norm(U\(L\(b)));
+...
+v_new=U \ (L\(A*V(:,k)));
+...
+end
+\end{lstlisting}
+\begin{table}[ht!]
+    \centering
+    \begin{tabular}{|c|ccc|}
+    \hline
+         \textbf{Method}& \textbf{Iterations} &\textbf{Final residue} & \textbf{“True" residue} \\
+         \hline 
+         \texttt{myprecgmres}&93 &8.921 $\cdot 10^{-11}$ &5.45 $\cdot 10^{-13}$\\
+         MATLAB \texttt{gmres}& 93& 8.919 $\cdot 10^{-11}$ &5.45 $\cdot 10^{-13}$\\ \hline
+    \end{tabular}
+    \caption{Comparison between \texttt{myprecgmres} and MATLAB's \texttt{gmres} for iterations number, final residue and true residue $\| Ax - \bf b\|$.}
+    \label{tab:ex06}
+\end{table}
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.45\linewidth]{Pic/ex06.jpg}
+    \caption{Convergence Plot comparison between \texttt{myprecgmres} and MATLAB's \texttt{gmres}.}
+    \label{fig:ex06}
+\end{figure}
+
+Again, to test the function \texttt{myprecgmres}, it is applied for solving the same linear system as in Exercise $5$ with the ILU preconditioner with drop tolerance $0.1$. Table \ref{tab:ex06} compares \texttt{myprecgmres} with MATLAB's \texttt{gmres} for number of iterations, final residue, and true residue.
+As shown in Figure \ref{fig:ex06}, the \texttt{myprecgmres} produces results very similar to those of MATLAB's \texttt{gmres} and behaves similarly.
+

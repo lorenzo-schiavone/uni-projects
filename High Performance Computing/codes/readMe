@@ -1,0 +1,12 @@
+per compilare
+
+con la QR piena
+
+>> g++ -O3 -fopenmp topol.cpp qr.cpp gmres_restart.cpp main.cpp -o main_qr
+
+con le rotazioni di Givens
+
+>> g++ -O3 -fopenmp topol.cpp gmres_restart_givens.cpp main.cpp -o main_gvns
+
+Usare main_noatomic.cpp invece che main.cpp per l'assemblaggio senza direttive atomic 
+

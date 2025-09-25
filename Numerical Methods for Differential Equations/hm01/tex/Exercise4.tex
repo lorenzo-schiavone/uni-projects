@@ -1,0 +1,68 @@
+\section{Exercise 4}
+We want to solve the linear system of ODEs
+\begin{align*}
+    {\bf y}'(t) &= - A{\bf y} \\
+    {\bf y}(0) &= {\bf y_0} = (1,1, \dots, 1)^T
+\end{align*}
+for $t\in (0, T]$, $T=0.1$ and $A = \texttt{delsq(numgrid('S'), 60)}*(60-1)^2$ the 5-points Finite Difference discretization of the Laplacian. The \emph{exact} solution to this problem at the final time is \[\exp(-TA){\bf y_0}.\]
+
+\textit{We want to determine the interval of absolute stability of the 4 stage Runge-Kutta method for this problem:}
+the method applied to the problem yields
+\[ {\bf y}_{n+1} = (I + hB + \frac{1}{2}h^2B^2 + \frac{1}{6}h^3B^3 + \frac{1}{24}h^4B^4){\bf y}_n,\] 
+for $B=-A$. As $B$ is symmetric, it is orthogonally diagonalizable, i.e., there exists an orthogonal matrix $V$ such that $B = V\Lambda V'$ and $\Lambda = \text{diag}(\lambda_1, \dots, \lambda_N)$ contains in the diagonal the eigenvalues of $B$. With the change of variable $z= V'y$, the system is decoupled
+\[ \begin{cases}
+    z_{n+1}^{(1)} = (1 + h \lambda_1 +\frac{1}{2}h^2\lambda_1^2 + \frac{1}{6}h^3\lambda_1^3 + \frac{1}{24}h^4\lambda_1^4)z_{n}^{(1)} \\
+    \hfill \dots \hfill \\
+    z_{n+1}^{(N)} = (1 + h \lambda_N +\frac{1}{2}h^2\lambda_N^2 + \frac{1}{6}h^3\lambda_N^3 + \frac{1}{24}h^4\lambda_N^4)z_{n}^{(N)}.
+\end{cases}\]
+Therefore, the method is absolutely stable if and only if every equation is stable, i.e., if and only if \[|(1 + h \lambda_i +\frac{1}{2}h^2\lambda_i^2 + \frac{1}{6}h^3\lambda_i^3 + \frac{1}{24}h^4\lambda_i^4)|\leq 1\] for every $i=1, \dots, N$. 
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=0.5\linewidth, height=5cm]{Pic/rk4_stability_region.jpg}
+    \caption{Region of absolutely stability of Runge Kutta 4 method.
+    }
+    \label{fig:enter-label}
+\end{figure}
+We compute the highest norm of real $\overline{h}$ such that $|(1 + \overline{h} +\frac{1}{2}\overline{h}^2 + \frac{1}{6}\overline{h}^3 + \frac{1}{24}\overline{h}^4)|\leq 1 $ and it is equal to $2.78$. Therefore, we need
+\[|h|<\frac{2.78} {|\lambda_i|} \] for all $i=1, \dots, N$ and in particular $|h|< 2.78 \cdot \max|\lambda_i|^{-1}$. The MATLAB function \texttt{eigs(A, 1, 'lm')} provides $\max|\lambda_i|= 27828$ so that the interval of absolute stability is $0<h<1.001\cdot 10^{-4}$.
+\vspace{.2cm}
+
+\textit{To solve numerically the problem,} we make use of the \texttt{ode45} MATLAB function, the Crank Nicolson method (CN) and the Backward Differentiation Formula (BDF3) with step size $h \in \{10^{-2}, 10^{-3}, 10^{-4}, 10^{-5}\}$.
+
+For each run, we record the number of steps employed by the method, the CPU time, and the infinity norm of the difference between the exact and the approximate solution at the final time $T=0.1$. The results are reported in Table \ref{tab:CPU&error}.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{c|c|c|c}
+        \textbf{Method} & \textbf{n° of steps} & \textbf{CPU time (in sec)} & \textbf{infinity norm final error} \\
+        \hline
+        ODE45 & 3353 & 0.729 & 2.16$\cdot 10^{-5}$ \\
+        \hline
+        CN & 10 & 0.032 & 4.58$\cdot 10^{-1}$ \\
+        CN & 100 & 0.139& 1.40$\cdot 10^{-5}$  \\
+        CN & 1000 & 1.460 & 1.40$\cdot 10^{-7}$ \\
+        CN & 10000 & 8.897 & 1.40$\cdot 10^{-9}$ \\
+        \hline
+        BDF3 & 10 & 0.159 & 7.96 $\cdot 10^{-4}$ \\
+        BDF3 & 100 & 0.198 & 7.06 $\cdot 10^{-7}$ \\
+        BDF3 & 1000 & 1.326 & 7.16 $\cdot 10^{-10}$ \\
+        BDF3 & 10000 & 9.602 & 4.61 $\cdot 10^{-13}$ \\
+        
+    \end{tabular}
+    \caption{number of steps, CPU time and error between the exact and the approximate solution at the final time $T=0.1$ for the different runs.}
+    \label{tab:CPU&error}
+\end{table}
+
+For efficiency, every linear system is solved using MATLAB's \texttt{pcg} function with a tolerance $\texttt{tol} = h^{-3} $, and preconditioned by the incomplete Cholesky factor with drop tolerance $\texttt{droptol} = 10^{-2}$.
+
+The MATLAB \texttt{ode45} function takes a large number of steps and achieves a small infinity norm final error in a short computational time because each iteration of the method is computationally cheap and the step sizes are adaptive. 
+
+For the Crank-Nicolson method the final error decreases by a factor of $10^2$ whenever the step size $h$ is reduced by a factor of $10$, in accordance with the theoretical $2$ accuracy order of Crank-Nicolson, except for $h = 0.01$ which is not representative of the asymptotic behavior.
+
+In the case of the BDF3 method, the first two initial values are computed using a four stage Runge-Kutta method with a step size of $\min( h/2, 10^{-4})$, which lies within the stability interval for the RK4. The final error decreases by a factor of $10^3$ whenever the step size $h$ 
+is reduced by a factor of $10$, 
+consistent with the theoretical $3$ accuracy order of BDF3.
+
+Given this setup, the most efficient method to achieve a given accuracy is BDF3 because it has the best trade-off between CPUtime and accuracy.
+
+\pagebreak

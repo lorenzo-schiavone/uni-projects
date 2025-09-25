@@ -1,0 +1,24 @@
+run main.m to run the model, 
+"modelCreationSolution.m" create for each mesh the model and solve the heat equation, it then save the solution in result_mesh{k}.mat,
+produce the tables for the tracking points value and error, the FEM convergence summary table and the convergence plot for the pcg for the stationary solution.
+"plots.m" produces the plot for all the time at the track points, at the requested time for the trace points of the external boundaries, the mesh trianglarization for mesh2
+and the solution at all points for mesh4 t=2.5,5,7.5,10.
+
+**the folder structure to make it read the data is the following:**
+
+├── main.m
+├── modelCreationSolution.m
+├── plots.m
+├── solRef.dat (TO ADD)
+├── readMe
+└── input/ (TO ADD)
+    ├── mesh0/
+    │   ├── mesh0.bound
+    │   ├── mesh0.coord
+    │   ├── mesh0.topol
+    │   ├── mesh0.track
+    │   └── mesh0.trace
+    ├── mesh1/
+    │   └── ...
+    ├── mesh2
+    └── ...
