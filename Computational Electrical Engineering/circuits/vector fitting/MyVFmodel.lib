@@ -1,0 +1,12 @@
+* Auto-generated subcircuit
+.SUBCKT MyVFmodel my0 Port1
+Gc1_1 Port1 my0 Pole1 my0 1.000270e+08
+Gc1_2 Port1 my0 Pole2 my0 -2.843336e+04
+Gd1_1 Port1 my0 Port1 my0 1.000000e-06
+R1 my0 Pole1 2.500747e-08
+C1 my0 Pole1 1.000000e+00
+R2 my0 Pole2 8.797141e-05
+C2 my0 Pole2 1.000000e+00
+Gb1_1 my0 Pole1 Port1 my0 1.000000e+00
+Gb2_1 my0 Pole2 Port1 my0 1.000000e+00
+.ENDS MyVFmodel
