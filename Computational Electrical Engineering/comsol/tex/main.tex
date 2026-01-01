@@ -1,0 +1,159 @@
+% !TEX root = main.tex
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[hidelinks]{hyperref}
+\usepackage[margin=1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
+
+\usepackage{enumerate}
+\usepackage[textwidth=.8*\marginparwidth]{todonotes}
+
+\title{Computational Electrical Engineering - Comsol Assignment for the Numerical Lab}
+\author{Lorenzo Schiavone}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\pagebreak
+
+\section{Non-linear Inductor 2D Magnetoquasistatic}
+In this exercise, we study a non linear inductor in 2D with a magnetic core whose constitutive relation is modelled with a BH curve.
+\subsection{Geometry}
+The geometry is as follows.
+\begin{figure}[H]
+\centering
+%\includegraphics[width=0.7\textwidth]{../pic/nlind_geometry.png}
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/nlind_coil.png}
+\end{subfigure}
+\quad
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/nlind_magnet.png}
+\end{subfigure}
+\caption{Geometry for the Planar Inductor, in the left the coils, in the right the magnetic core.}
+\end{figure}
+
+Afterwards, we follow the steps described in the Notes for Numeric Laboratories, Section 7.7, i.e., we assign the material with the effective BH-curve to the magnetic core and set up the coil with a parameter for the corrent and select the model Coil Group Homogenized multiturn with five turns.
+\subsection{Mesh}
+Then, before starting the parametric study at $50$ Hz frequency with different current values in the range $1$ mA to $1000$ A we build the mesh with Free Triangular Element, as shown in the figures below.
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/nlind_mesh.png}
+\caption{Mesh for the Planar Inductor.}
+\end{subfigure}
+\quad
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/nlind_mesh_zoom.png}
+\caption{Zoom for the Mesh near the air gap.}
+\end{subfigure}
+\end{figure}
+
+\subsection{Results}
+From the parametric study, we obtain the following numerical results.
+Figure \ref{fig:magneticRes} illustrates the norm of the resulted Magentic Field. The Relative Magnetic Permeability distribution for different values of the current exhibits the saturation of the material starting from the shortest path for the streamline of the magnetic field, as we may notice in Figure \ref{fig:relMu}.
+Finally, Figure \ref{fig:inductance} include the plot of the Inductance - Coil Current relation.
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/nlind_magneticFluxDensity250A.png}
+\end{subfigure}
+\quad
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/nlind_magneticFluxDensity600A.png}
+\end{subfigure} \\
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/nlind_magneticFluxDensity850A.png}
+\end{subfigure}
+\quad
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/nlind_magneticFluxDensity1000A.png}
+\end{subfigure}
+\caption{Magnetic Field Norm for different values of the Current.}\label{fig:magneticRes}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{../pic/nlind_inductance.png}
+\caption{Plot of the Inductance - Coil Current relation.}\label{fig:inductance}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/nlind_mu200A.png}
+\end{subfigure}
+\quad
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/nlind_mu600A.png}
+\end{subfigure} \\
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/nlind_mu850A.png}
+\end{subfigure}
+\quad
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/nlind_mu1000A.png}
+\end{subfigure}
+\caption{Relative Magnetic Permeability distribution for different values of the Current.}\label{fig:relMu}
+\end{figure}
+
+\pagebreak
+\section{Electrostatic DC in 2D-axisymmetric – Plane Capacitor}
+In this section, we consider the 2D-axisymmetric Plane Capacitor in the Electrostatic formulation. The circular plates have a diameter of 20 cm, an height of 1 cm and a distance of 2 cm. The dielectric material in the middle of the plates has a relative electric permittivity $\epsilon_r = 4$. At the plates are imposed fixed voltage of 1V and -1V respectively.
+
+\subsection{Geometry}
+The geometry drawn in Comsol is reported in the figures below.
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/pCap_geometry.png}
+\caption{Geometry for the 2D-axisymmetric Planar Capacitor.}
+\end{subfigure}
+\quad
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/pCap_geometry_zoom.png}
+\caption{Zoom for the Geometry near the plates.}
+\end{subfigure}
+\end{figure}
+
+\subsection{Mesh}
+The figures below shows the mesh used for the Finite Element computations.
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/pCap_mesh.png}
+\caption{Mesh for the 2D-axisymmetric Planar Capacitor.}
+\end{subfigure}
+\quad
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/pCap_mesh_zoom.png}
+\caption{Zoom for the Mesh near the plates.}
+\end{subfigure}
+\end{figure}
+
+\subsection{Results}
+The computed electric potential distribution is illustrated in the figure below on the left. For reference, we compare it with the results obtained using the Matlab PDE-Toolbox, in the right figure, and the results are alike.
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/pcap_V.png}
+\caption{Comsol Electric Potential Distribution.}
+\end{subfigure}
+\quad
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/pcap_V_matlab.jpg}
+\caption{Matlab Electric Potential Distribution.}
+\end{subfigure}
+\end{figure}
+Even though not necessary, we assign Ground 1 in Comsol to the lower plate and Terminal 1 with 2V voltage for the Comsol automatic computation of the Capacitance. The Global Evaluations \texttt{es.C11} and $\texttt{es.intWe} * 2 / (\texttt{dV}^2) $ provide the same result for the capacitance of $6.1419\cdot 10^{-11}$ F.
+
+\end{document}

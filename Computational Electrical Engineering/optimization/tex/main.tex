@@ -1,0 +1,190 @@
+% !TEX root = main.tex
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[hidelinks]{hyperref}
+\usepackage[margin=1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
+
+\usepackage{enumerate}
+\usepackage[textwidth=.8*\marginparwidth]{todonotes}
+
+\title{Computational Electrical Engineering - Optimization Assignment for the Numerical Lab}
+\author{Lorenzo Schiavone}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Comparison of Gradient-Based and Stochastic Algorithms}
+We are asked to compare the Gradient-Based and Stochastic Optimization scheme to find the minimum of a function.
+
+\subsection{Plot of the objective function}
+The test is performed on the Rastrigin function
+\[f(x_1,\dots, x_n) = An + \sum_{i=1}^n\left(x_i^2 - A\cos(2\pi x_i)\right),
+\]
+for $n=2$ and $A=10$. The Rastrigin function is a common benchmark for optimization algorithm as it exhibits many local minima and its global minimum is exactly the origin $\mathbf{0}$, as we may notice in Figure \ref{fig:plot}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{../pic/Rastrigin_function.png}
+\caption{Rastrigin function in the range $[-5.12,5.12]\times[-5.12,5.12]$.}\label{fig:plot}
+\end{figure}
+
+\subsection{Visual Comparison and Statistics}
+We rely on the built-in Matlab functions \texttt{fminunc} for the gradient-based method and the genetic algorithm \texttt{ga} for the stochastic approach. Since the gradient-based method requires an initial value for $\mathbf{x}$, for every run the initial value is obtained as
+\[
+\texttt{x = 2*(rand(2,1)-.5)*bound;}
+\]
+that is a random 2D point in $\texttt{bound}*([-1,1]\times [-1,1])$, with $\texttt{bound}=5.12$.
+For a visual comparison, we run $N=40$ times each algorithm and we plot the resulting computed optimal solution on the contour plot of the function.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{../pic/comparison_contour.png}
+\caption{Contour plot of the Rastrigin function with computed optimal solutions for \texttt{ga} and \texttt{fminunc}.}\label{fig:contour}
+\end{figure}
+
+Figure \ref{fig:contour} highlights that the stochastic approach is able to reach consistently the region near the origin where the function is lower, while the gradient-based method is heavily dependent on the initial values and it gets stuck on local minima.
+
+We record statistics by running again the two methods for $N=1000$ times. The obtained results are summerized in Table \ref{tab:stats}. Table \ref{tab:stats} shows how, even though the gradient-based method is able to find the lowest minimum in a single run, it often easily gets stucks in suboptima minima and it performs worse than the stochastic approach in mean, standard deviation and maximum. On the other hand the genetic algorithm is able to find points near the global minima reliably and with low standard deviation. Also, its the worst case scenario is one order of magnitude better than the one with the gradient based approach.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{c|c|c}
+& \textbf{Gradient Based} & \textbf{Genetic Algorithm} \\ \hline
+mean & 16.015 & 0.32535 \\
+std & 11.785 & 0.60883 \\
+min & 1.4211e-14 & 2.7583e-11 \\
+max & 60.692 & 4.9748
+\end{tabular}
+\caption{Statistics on $f(\texttt{x}_\texttt{opt})$ found by 1000 runs of the two methods for the Rastrigin function.}\label{tab:stats}
+\end{table}
+
+\subsection{A table with the solutions ($x$ vector) computed with the gradient-based and the stochastic approach}
+Table \ref{tab:res} includes the coordinate $\mathbf{x}$ of the found minima and their corresponding $f$ value for 10 runs of the gradient based and genetic algorithm each.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{c|cc|c|cc|c}
+ & \multicolumn{3} {c|} {\textbf{Gradient Based}} & \multicolumn{3} {c} {\textbf{Genetic Algorithm}} \\ \hline
+run & $x_\text{opt}$ & $y_\text{opt}$ & $f(x_\text{opt},y_\text{opt}) $ & $x_\text{opt}$ & $y_\text{opt}$ & $f(x_\text{opt},y_\text{opt})$ \\ \hline
+1  & 2.5064e-08 & 1.9899 & 3.9798 &    -1.1519e-06   &   1.877e-05   &   7.0159e-08 \\
+2  & 0.99496 & -0.99496 & 1.9899 &      2.4912e-05   &  2.5959e-05   &   2.5682e-07 \\
+3  & -1.9899 & 2.9849 & 12.934 &        -1.205e-07   &  2.5853e-06   &   1.3289e-09 \\
+4  & -1.9899 & -1.9899 & 7.9597 &       4.4799e-07   &  4.4188e-07   &   7.8554e-11 \\
+5  & -3.9798 & 1.9899 & 19.899 &        2.8582e-06   &  2.4343e-06   &   2.7963e-09 \\
+6  & 0.99496 & 7.0329e-09 & 0.99496 &   -1.744e-06   &  7.4266e-06   &   1.1546e-08 \\
+7  & -0.99496 & 1.9899 & 4.9748 &         -0.99496   &    -0.99496   &       1.9899 \\
+8  & -1.9899 & -1.9899 & 7.9597 &      -2.9914e-06   &  5.9759e-06   &   8.8601e-09 \\
+9  & -0.99496 & -3.9798 & 16.914 &      1.2764e-06   &  1.0668e-05   &   2.2902e-08 \\
+10 & 0.99496 & 4.9747 & 25.869 &        1.8154e-06   & -2.4552e-06   &   1.8498e-09 \\
+\end{tabular}
+\caption{Ten runs found minima and corresponding $f$ value for the gradient based and genetic algorithm.}\label{tab:res}
+\end{table}
+
+\subsection{The trend of $f_\text{best} during the iterations of the stochastic approach}
+Figure \ref{fig:fbest} includes the trend of $f_\text{best}$ during the iterations of the one genetic algorithm run.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]
+
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/fmaxTrend.png}
+\end{subfigure}
+\quad
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{../pic/fmaxTrend_zoom.png}
+\end{subfigure}
+\caption{Trend of $f_\text{best}$ on a genetic algorithm run. On the right, zoom for $\texttt{Generation}>25$.}\label{fig:fbest}
+\end{figure}
+
+For the first generations the population is largely diversified as the Mean fitness is far from the best fitness. Later, by recombining the good features in the different individual of the population, the algorithm is able to improve the best fitness gradually yet keeping the population diverse enough.
+Finally the algorithm stops when the whole population converges to the same point (or individual), as the mean approaches the best fitness, because there is no more possibility to recombine diverse features.
+
+% \subsection{Geometry}
+% The geometry is as follows.
+% \begin{figure}[H]
+% \centering
+% \begin{subfigure}{0.45\textwidth}
+% \includegraphics[width=\textwidth]{../pic/nlind_coil.png}
+% \end{subfigure}
+% \quad
+% \begin{subfigure}{0.45\textwidth}
+% \includegraphics[width=\textwidth]{../pic/nlind_magnet.png}
+% \end{subfigure}
+% \caption{Geometry for the Planar Inductor, in the left the coils, in the right the magnetic core.}
+% \end{figure}
+
+% Afterwards, we follow the steps described in the Notes for Numeric Laboratories, Section 7.7, i.e., we assign the material with the effective BH-curve to the magnetic core and set up the coil with a parameter for the corrent and select the model Coil Group Homogenized multiturn with five turns.
+% \subsection{Mesh}
+% Then, before starting the parametric study at $50$ Hz frequency with different current values in the range $1$ mA to $1000$ A we build the mesh with Free Triangular Element, as shown in the figures below.
+% \begin{figure}[H]
+% \centering
+% \begin{subfigure}{0.45\textwidth}
+% \includegraphics[width=\textwidth]{../pic/nlind_mesh.png}
+% \caption{Mesh for the Planar Inductor.}
+% \end{subfigure}
+% \quad
+% \begin{subfigure}{0.45\textwidth}
+% \includegraphics[width=\textwidth]{../pic/nlind_mesh_zoom.png}
+% \caption{Zoom for the Mesh near the air gap.}
+% \end{subfigure}
+% \end{figure}
+
+% \subsection{Results}
+% From the parametric study, we obtain the following numerical results.
+% Figure \ref{fig:magneticRes} illustrates the norm of the resulted Magentic Field. The Relative Magnetic Permeability distribution for different values of the current exhibits the saturation of the material starting from the shortest path for the streamline of the magnetic field, as we may notice in Figure \ref{fig:relMu}.
+% Finally, Figure \ref{fig:inductance} include the plot of the Inductance - Coil Current relation.
+% \begin{figure}[H]
+% \centering
+% \begin{subfigure}{0.45\textwidth}
+% \includegraphics[width=\textwidth]{../pic/nlind_magneticFluxDensity250A.png}
+% \end{subfigure}
+% \quad
+% \begin{subfigure}{0.45\textwidth}
+% \includegraphics[width=\textwidth]{../pic/nlind_magneticFluxDensity600A.png}
+% \end{subfigure} \\
+% \begin{subfigure}{0.45\textwidth}
+% \includegraphics[width=\textwidth]{../pic/nlind_magneticFluxDensity850A.png}
+% \end{subfigure}
+% \quad
+% \begin{subfigure}{0.45\textwidth}
+% \includegraphics[width=\textwidth]{../pic/nlind_magneticFluxDensity1000A.png}
+% \end{subfigure}
+% \caption{Magnetic Field Norm for different values of the Current.}\label{fig:magneticRes}
+% \end{figure}
+
+
+
+% \begin{figure}[H]
+% \centering
+% \begin{subfigure}{0.45\textwidth}
+% \includegraphics[width=\textwidth]{../pic/nlind_mu200A.png}
+% \end{subfigure}
+% \quad
+% \begin{subfigure}{0.45\textwidth}
+% \includegraphics[width=\textwidth]{../pic/nlind_mu600A.png}
+% \end{subfigure} \\
+% \begin{subfigure}{0.45\textwidth}
+% \includegraphics[width=\textwidth]{../pic/nlind_mu850A.png}
+% \end{subfigure}
+% \quad
+% \begin{subfigure}{0.45\textwidth}
+% \includegraphics[width=\textwidth]{../pic/nlind_mu1000A.png}
+% \end{subfigure}
+% \caption{Relative Magnetic Permeability distribution for different values of the Current.}\label{fig:relMu}
+% \end{figure}
+
+\end{document}

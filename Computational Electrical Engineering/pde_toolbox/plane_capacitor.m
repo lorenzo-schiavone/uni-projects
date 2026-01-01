@@ -22,7 +22,7 @@ gd(1:length(gd_2),3)=gd_2;
 gd(1:length(gd_3),4)=gd_3;
 
 % now exploit symmetries - rect to restrict domain
-typ_4=2; N_4=4; x_4 = R*[0;0;1;1]; y_4 = R*[0;1;1;0];
+typ_4=2; N_4=4; x_4 = 10*R*[0;0;1;1]; y_4 = 10*R*[0;1;1;0];
 gd_4 = [typ_4;N_4;x_4;y_4];
 gd(1:length(gd_3),5)=gd_4;
 
@@ -38,7 +38,7 @@ axis equal
 
 %% MESH 
 hmax = 0.01; % mesh size
-mesh = generateMesh(model,"Hmax",hmax,'HEdge', {[3,4,5, 8,9,10], 0.005}, 'GeometricOrder','quadratic');
+mesh = generateMesh(model,"Hmax",hmax,'HEdge', {[1,2,3,6,8], 0.0025}, 'GeometricOrder','quadratic');
 
 figure
 pdemesh(model);
@@ -50,9 +50,9 @@ eps0=8.8541878188e-12; epsr = 4;
 specifyCoefficients(model ,"m",0,"d",0,"c",eps0 ,"a",0,"f",0,'Face',1);
 specifyCoefficients(model ,"m",0,"d",0,"c",eps0*epsr,"a",0,"f",0,'Face',2);
 
-v0 = 1; 
-applyBoundaryCondition(model,"dirichlet", "Edge",[7,8], "u",0);
-applyBoundaryCondition(model,"dirichlet", "Edge",[3,4,10], "u",v0);
+v0 = 1; v1 = -1;
+applyBoundaryCondition(model,"dirichlet", "Edge",[5,6], "u",0);
+applyBoundaryCondition(model,"dirichlet", "Edge",[1,2,8], "u",v0);
 % no flux is automatically imposed
 
 %% RESULTS
@@ -68,8 +68,9 @@ ylabel("y")
 colormap jet
 colorbar;
 
-disp("Capacitance Energy:")
+disp("Capacitance:")
 fem_nobc = assembleFEMatrices(model); 
-We= 4* u'*fem_nobc.K*u/2;
-disp(We)
+We= 4 * u'*fem_nobc.K*u/2;
+C = 2 * We / ((v0-v1)^2); % as W = .5 * C * (dV)^2
+disp(C)
 

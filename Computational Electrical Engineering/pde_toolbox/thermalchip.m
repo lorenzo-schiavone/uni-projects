@@ -15,7 +15,7 @@ gd_2 = [typ;N;x_2;y_2];
 typ=2; N=4; x_3 = w2 + [0;w2;w2;0]; y_3 = h1+h2-h3 + [0;0;h3;h3]; % rect1 da togliere
 gd_3 = [typ;N;x_3;y_3];
 
-typ=2; N=4; x_4 = 3*w2 + [0;w2;w2;0]; y_4 = h1+h2-h3 + [0;0;h3;h3]; % rect1 da togliere
+typ=2; N=4; x_4 = 3*w2 + [0;w2;w2;0]; y_4 = h1+h2-h3 + [0;0;h3;h3]; % rect2 da togliere
 gd_4 = [typ;N;x_4;y_4];
 
 gd = zeros(length(gd_1),3); 
@@ -59,15 +59,13 @@ edges_idx = [ 2, 3, 4, 5, 8, 10, 11, 12, 13, 14, 15]; %   8, 10];
 applyBoundaryCondition(model ,"neumann", "Edge", edges_idx ,'q', heatconvecitivity, 'g', heatconvecitivity*Text);
 
 %% RESULTS AND PLOT
-%fem = assembleFEMatrices(model,'nullspace');
 
-% uc=fem.Kc\fem.Fc;
-% u=fem.B*uc+fem.ud;
-results = solvepde(model); 
-u = results.NodalSolution;
+fem = assembleFEMatrices(model,'nullspace');
+uc=fem.Kc\fem.Fc;
+u=fem.B*uc+fem.ud;
 
 figure
-pdeplot(model ,"XYData",u) % check 
+pdeplot(model ,"XYData",u) 
 axis equal
 title("T [°C], Steady State");
 xlabel("x")
@@ -76,22 +74,22 @@ colormap jet
 colorbar;
 
 %% TRANSIENT 
-tic
 T = 200; f = 1000;
 time_window = 0:T;
 x0 = u*0;
-p = @(t) 2*(1+0.2*(sin(4*pi*f*t)).^2);
+p = @(t) (1+0.2*(sin(4*pi*f*t).^2)); % term to be multiplied to the constant load vector fem.Fc
 %options = odeset('RelTol', 1e-4);
+% transient d~=0
 specifyCoefficients(model ,"m",0,"d",heatDensityHeatSink * heatCapacityHeatSink,"c", thermalConductivityHeatSink ,"a",0,"f",0,'Face',1);
 specifyCoefficients(model ,"m",0,"d",heatDensitySilicon * heatCapacitySilicon,"c", thermalConductivitySilicon ,"a",0,"f",dissPower/(w*h1*z),'Face',2);
 fem = assembleFEMatrices(model,'nullspace');
 
 [tt,xx] = ode15s(@(t,x) fem.M \ (-fem.Kc*x+fem.Fc*p(t)), time_window, x0);%, options);
 ut = fem.B*xx.' +repmat(fem.ud,1,length(tt));
-toc
 
 node_indices = findNodes(model.Mesh, 'nearest', [0.005; 0.005]);
 figure
 plot(tt,(ut(node_indices,:)))
 xlabel('time [s]')
+title("Temperature in a point [°C]")
 drawnow
